@@ -28,7 +28,7 @@ class Hardware_db(db.Model):
 
     def get_serial_connection(self):
         try:
-            return serial.Serial('COM4', 115200, timeout=1)
+            return serial.Serial('COM5', 115200, timeout=1)
         except serial.SerialException as e:
             print("เชื่อมต่อ COM4 ไม่สำเร็จ:", e)
             return None

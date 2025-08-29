@@ -52,7 +52,7 @@ def create_app(config_class=Config):
     # create hardware interface instance and connect
     
     
-    hw = HardwareInterface(port='COM4')  # ปรับพอร์ตตามเครื่อง
+    hw = HardwareInterface(port='COM5')  # ปรับพอร์ตตามเครื่อง
     if hw.connect_serial():
         app.logger.info("HardwareInterface connected")
     else:

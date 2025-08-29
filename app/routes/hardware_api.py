@@ -20,30 +20,32 @@ def com_status():
     #print(connection_info)
     return jsonify({'connected': connection_info})
 
-@hardware_bp.route('/lamp/lampcontrol', methods=['POST'])
+@hardware_bp.route('/lamp/lampcontrol', methods=['GET', 'POST'])
 def lamp_control():
-    data = request.get_json()
-    print(data)
-    if not data:
-        return jsonify({'status':'error','message':'No data'}),400
+    if request.method == 'POST':
+        data = request.get_json(silent=True) or {}
+        device_id = data.get('device_id')
+        action = data.get('action')
+        channel = data.get('channel')
+    else:  # GET
+        device_id = request.args.get('device_id')
+        action = request.args.get('action')
+        channel = request.args.get('channel')
 
-    device_id = data.get('device_id')
-    action = data.get('action')
-    channel = data.get('channel')
-
+    # ตรวจสอบ parameter
     if None in (device_id, action, channel):
-        return jsonify({'status':'error','message':'Missing params'}),400
+        return jsonify({'status': 'error', 'message': 'Missing params'}), 400
 
     hw = current_app.config.get('hardware_interface')
-
     if not hw:
-        return jsonify({'status':'error','message':'Hardware interface not initialized'}),500
+        return jsonify({'status': 'error', 'message': 'Hardware interface not initialized'}), 500
 
     ok = hw.control_lamp(str(device_id), str(action), str(channel))
     if ok:
-        return jsonify({'status':'success','message':'Command queued/sent'})
+        return jsonify({'status': 'success', 'message': 'Command queued/sent'})
     else:
-        return jsonify({'status':'warning','message':'Queued but immediate send failed'}), 202
+        return jsonify({'status': 'warning', 'message': 'Queued but immediate send failed'}), 202
+
 
 # ✅ GET: อ่านสถานะหลอดไฟทั้งหมด
 @hardware_bp.route('/lamp/status', methods=['GET'])
