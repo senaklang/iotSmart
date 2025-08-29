@@ -1,0 +1,261 @@
+:root {
+    --primary-color: #4361ee;
+    --secondary-color: #3f37c9;
+    --accent-color: #4cc9f0;
+    --dark-color: #1b263b;
+    --light-color: #f8f9fa;
+    --success-color: #4caf50;
+    --warning-color: #ff9800;
+    --danger-color: #f44336;
+    --info-color: #2196f3;
+}
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f5f7fa;
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Navbar Styling */
+.navbar {
+    background: linear-gradient(135deg, var(--dark-color), var(--primary-color));
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    padding: 0.8rem 1rem;
+}
+
+.navbar-brand {
+    font-weight: 600;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand i {
+    font-size: 1.8rem;
+}
+
+/* Card Styling */
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    background-color: white;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    border-bottom: none;
+}
+
+/* Gradient Backgrounds for Card Headers */
+.bg-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+}
+
+.bg-warning {
+    background: linear-gradient(135deg, var(--warning-color), #ffc107);
+}
+
+.bg-danger {
+    background: linear-gradient(135deg, var(--danger-color), #e53935);
+}
+
+.bg-success {
+    background: linear-gradient(135deg, var(--success-color), #2e7d32);
+}
+
+.bg-info {
+    background: linear-gradient(135deg, var(--info-color), #00bcd4);
+}
+
+.bg-secondary {
+    background: linear-gradient(135deg, #6c757d, #495057);
+}
+
+/* Sensor Display Boxes */
+.sensor-box {
+    border-radius: 10px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    background: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+}
+
+.sensor-box:hover {
+    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+}
+
+.temp-box {
+    border-left-color: var(--info-color);
+}
+
+.humidity-box {
+    border-left-color: var(--success-color);
+}
+
+.light-box {
+    border-left-color: var(--warning-color);
+}
+
+.ph-box {
+    border-left-color: var(--danger-color);
+}
+
+/* Button Styling */
+.btn {
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+}
+
+.btn-lg {
+    padding: 0.8rem 1.5rem;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    box-shadow: 0 4px 6px rgba(67, 97, 238, 0.3);
+}
+
+.btn-success {
+    background: linear-gradient(135deg, var(--success-color), #2e7d32);
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.3);
+}
+
+.btn-danger {
+    background: linear-gradient(135deg, var(--danger-color), #c62828);
+    box-shadow: 0 4px 6px rgba(244, 67, 54, 0.3);
+}
+
+.btn-warning {
+    background: linear-gradient(135deg, var(--warning-color), #f57c00);
+    box-shadow: 0 4px 6px rgba(255, 152, 0, 0.3);
+}
+
+.btn-info {
+    background: linear-gradient(135deg, var(--info-color), #00838f);
+    box-shadow: 0 4px 6px rgba(33, 150, 243, 0.3);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+}
+
+/* Form Elements */
+.form-control,
+.form-select {
+    border-radius: 8px;
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+.form-range::-webkit-slider-thumb {
+    background: var(--primary-color);
+}
+
+/* Table Styling */
+.table {
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead th {
+    background-color: var(--dark-color);
+    color: white;
+    font-weight: 500;
+    padding: 1rem;
+}
+
+.table tbody tr {
+    transition: all 0.2s ease;
+}
+
+.table tbody tr:hover {
+    background-color: rgba(67, 97, 238, 0.05);
+}
+
+/* Badge Styling */
+.badge {
+    padding: 0.5em 0.8em;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+/* Chart Containers */
+.chart-container {
+    position: relative;
+    height: 250px;
+    width: 100%;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-header h5 {
+        font-size: 1.2rem;
+    }
+
+    .display-4 {
+        font-size: 2.5rem;
+    }
+}
+
+/* Animation for Sensor Values */
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.05);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+.value-updated {
+    animation: pulse 0.5s ease;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}

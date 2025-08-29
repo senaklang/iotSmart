@@ -1,0 +1,26 @@
+{% extends "base.html" %} {% block title %}ข้อมูลเซ็นเซอร์เรียลไทม์ | IoT
+Monitoring{% endblock %} {% block script_extra %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='css/style.css') }}"
+  href="{{ url_for('static', filename='css/hardware_sensor.css') }}"
+/>
+<script src="{{ url_for('static', filename='js/hardware_sensor.js') }}"></script>
+
+{% endblock %} {% block content %}
+<div class="container">
+  <h1><i class="fas fa-microchip"></i> ข้อมูลเซ็นเซอร์เรียลไทม์</h1>
+  <div class="refresh-info">
+    <i class="fas fa-clock"></i> อัปเดตอัตโนมัติในอีก
+    <span class="countdown" id="countdown">60</span> วินาที
+  </div>
+
+  <div class="last-updated" id="lastUpdated">
+    <i class="fas fa-sync-alt"></i> อัปเดตล่าสุด: กำลังโหลด...
+  </div>
+
+  
+  
+</div>
+
+{% endblock %}

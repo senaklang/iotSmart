@@ -1,0 +1,95 @@
+""""""
+import serial
+import serial.tools.list_ports
+import time
+from threading import Thread, Event
+import logging
+
+class Hardware:
+    def __init__(self, app=None):  # ทำให้ app เป็น optional parameter
+        """Initialize hardware controller"""
+        self.app = app
+        self.serial = None
+        self.port = None
+        self.baudrate = 115200
+        self.connected = Event()
+        self.read_thread = None
+        self.stop_event = Event()
+        
+        # Setup logging
+        logging.basicConfig(
+            level=logging.INFO,
+            format='%(asctime)s - %(levelname)s - %(message)s',
+            filename='hardware.log'
+        )
+        self.logger = logging.getLogger(__name__)
+        print("Hardware controller initialized")
+        self.control_led()
+        
+    def __del__(self):
+        self.disconnect_serial()
+        
+    def is_connected(self):
+        return self.serial is not None and self.serial.is_open
+
+    def connect_serial(self, port):
+        """Connect to specified serial port"""
+        try:
+            if self.is_connected():
+                self.disconnect_serial()
+                
+            self.serial = serial.Serial(
+                port=port,
+                baudrate=self.baudrate,
+                timeout=1
+            )
+            time.sleep(2)  # รอให้อุปกรณ์พร้อม
+            
+            self.port = port
+            self.connected.set()
+            self.logger.info(f"Connected to {port} successfully")
+            
+            # เริ่ม thread อ่านข้อมูล
+            self.stop_event.clear()
+            
+            return True
+            
+        except serial.SerialException as e:
+            self.logger.error(f"Connection error: {str(e)}")
+            self.serial = None
+            return False
+
+    # ... (keep all other methods from the previous hardware.py version) ...
+
+    def disconnect_serial(self):
+        """Disconnect from current serial port"""
+        try:
+            if self.is_connected():
+                self.stop_event.set()
+                if self.read_thread and self.read_thread.is_alive():
+                    self.read_thread.join(timeout=1)
+                
+                if self.serial is not None:
+                    self.serial.close()
+                self.connected.clear()
+                self.logger.info("Serial port disconnected")
+                
+            self.serial = None
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Disconnection error: {str(e)}")
+            return False
+        
+    def control_led(self):
+        if not self.connect_serial('COM4'):
+            print("Failed to connect to COM4")
+            return
+        if self.serial is None:
+            print("Serial connection is not established")
+            return
+        self.serial.write(b'on_position1\n')
+        print("LED turned on at position 1")
+        self.disconnect_serial()
+        
+h = Hardware()

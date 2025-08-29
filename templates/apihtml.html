@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Test Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .data-container {
+            margin: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .sensor-data {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .sensor-card {
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <h1>API Test Page<span><a href="/dashboard">Dashboard</a></span></h1>
+    <p>This page demonstrates how to call Flask APIs from HTML.</p>
+    
+    <div class="data-container">
+        <h2>Current Sensor Data</h2>
+        <button onclick="fetchCurrentData()">Get Current Data</button>
+        <div id="current-data" class="sensor-data"></div>
+    </div>
+    
+    <div class="data-container">
+        <h2>Historical Data</h2>
+        <select id="time-range">
+            <option value="48h">Last 48 Hours</option>
+            <option value="7d">Last 7 Days</option>
+            <option value="30d">Last 30 Days</option>
+            <option value="all">All Data</option>
+        </select>
+        <button onclick="fetchHistoricalData()">Get Historical Data</button>
+        <div id="historical-data"></div>
+        <canvas id="data-chart" width="400" height="200"></canvas>
+    </div>
+
+    <script>
+
+        // กำหนด BASE_API_URL ในไฟล์ config.js
+        const BASE_API_URL = '/api';
+        
+        // ฟังก์ชันสำหรับดึงข้อมูลเซ็นเซอร์ปัจจุบัน
+        async function fetchCurrentData() {
+            try {
+                const response = await fetch(BASE_API_URL+'/sensor/current');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const container = document.getElementById('current-data');
+                    container.innerHTML = `
+                        <div class="sensor-card">
+                            <h3>Temperature</h3>
+                            <p>${data.data.temperature} °C</p>
+                            <p>Source: ${data.source}</p>
+                        </div>
+                        <div class="sensor-card">
+                            <h3>Humidity</h3>
+                            <p>${data.data.humidity} %</p>
+                            <p>Source: ${data.source}</p>
+                        </div>
+                        <div class="sensor-card">
+                            <h3>TDS</h3>
+                            <p>${data.data.tds} ppm</p>
+                            <p>Source: ${data.source}</p>
+                        </div>
+                        <div class="sensor-card">
+                            <h3>pH</h3>
+                            <p>${data.data.ph}</p>
+                            <p>Source: ${data.source}</p>
+                        </div>
+                        <div class="sensor-card">
+                            <h3>eC</h3>
+                            <p>${data.data.ec}</p>
+                            <p>Source: ${data.source}</p>
+                        </div>
+                    `;
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to fetch current data');
+            }
+        }
+
+        // ฟังก์ชันสำหรับดึงข้อมูลย้อนหลัง
+        async function fetchHistoricalData() {
+            const timeRange = document.getElementById('time-range').value;
+            
+            try {
+                const response = await fetch(`${BASE_API_URL}/get_sensor_data?range=${timeRange}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    const container = document.getElementById('historical-data');
+                    
+                    // แสดงสถิติ
+                    container.innerHTML = `
+                        <h3>Statistics</h3>
+                        <p>Average Temperature: ${data.statistics.avg_temp} °C</p>
+                        <p>Max Temperature: ${data.statistics.max_temp} °C</p>
+                        <p>Min Temperature: ${data.statistics.min_temp} °C</p>
+                        <p>Average Humidity: ${data.statistics.avg_humidity} %</p>
+                        <p>Record Count: ${data.count}</p>
+                    `;
+                    
+                    // สร้างกราฟ
+                    createChart(data.data);
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to fetch historical data');
+            }
+        }
+
+        // ฟังก์ชันสร้างกราฟ
+        function createChart(data) {
+            const ctx = document.getElementById('data-chart').getContext('2d');
+            
+            // จัดเตรียมข้อมูลสำหรับกราฟ
+            const timestamps = data.map(item => new Date(item.timestamp).toLocaleTimeString());
+            const temperatures = data.map(item => item.temperature);
+            const humidities = data.map(item => item.humidity);
+            
+            // ถ้ามีกราฟเก่าอยู่ ให้ทำลายก่อนสร้างใหม่
+            if (window.dataChart) {
+                window.dataChart.destroy();
+            }
+            
+            window.dataChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: timestamps,
+                    datasets: [
+                        {
+                            label: 'Temperature (°C)',
+                            data: temperatures,
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        },
+                        {
+                            label: 'Humidity (%)',
+                            data: humidities,
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false
+                        }
+                    }
+                }
+            });
+        }
+
+        // ดึงข้อมูลปัจจุบันเมื่อหน้าเว็บโหลดเสร็จ
+        window.onload = fetchCurrentData;
+    </script>
+</body>
+</html>
