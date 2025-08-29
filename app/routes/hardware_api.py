@@ -42,9 +42,9 @@ def lamp_control():
 
     ok = hw.control_lamp(str(device_id), str(action), str(channel))
     if ok:
-        return jsonify({'status': 'success', 'message': 'Command queued/sent'})
+        return jsonify({'status': 'success', 'message': 'Command queued/sent'}), 200
     else:
-        return jsonify({'status': 'warning', 'message': 'Queued but immediate send failed'}), 202
+        return jsonify({'status': 'warning', 'message': 'Queued but immediate send failed'}), 200
 
 
 # ✅ GET: อ่านสถานะหลอดไฟทั้งหมด
